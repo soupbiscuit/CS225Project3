@@ -1,0 +1,9 @@
+{
+  "java.project.sourcePaths": [
+    "Project3/src"
+  ],
+  "java.project.outputPath": "bin",
+  "java.project.referencedLibraries": [
+    "C:/Users/perfe/Downloads/openjfx-25.0.2_windows-x64_bin-sdk/javafx-sdk-25.0.2/lib/*.jar"
+  ]
+}
