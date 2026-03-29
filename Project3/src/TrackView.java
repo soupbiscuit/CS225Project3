@@ -15,8 +15,14 @@ import javafx.scene.text.Text;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
+import javafx.animation.AnimationTimer;
+import javafx.scene.control.Alert;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrackView extends Application {
+    private RaceManager raceManager = new RaceManager();
+    private List<ImageView> carViews = new ArrayList<>();
     @Override
     public void start(Stage game)  {
         Pane root = new Pane();
@@ -26,6 +32,10 @@ public class TrackView extends Application {
         ImageView brownCar = new ImageView(new Image(getClass().getResourceAsStream("/Resources/brown-1.png")));
         ImageView redCar = new ImageView(new Image(getClass().getResourceAsStream("/Resources/decapred-1.png")));
         ImageView yellowCar = new ImageView(new Image(getClass().getResourceAsStream("/Resources/yellow1.png")));
+        carViews.add(blueCar);
+        carViews.add(brownCar);
+        carViews.add(redCar);
+        carViews.add(yellowCar);
 
         blueCar.setFitWidth(20);
         blueCar.setFitHeight(10);
@@ -56,6 +66,30 @@ public class TrackView extends Application {
         game.setScene(scene);
         game.setTitle("Track View");
         game.show();
+        AnimationTimer timer = new AnimationTimer() {
+            private long lastTime = 0;
+
+            @Override
+            public void handle(long now) {
+                if (lastTime == 0) {
+                    lastTime = now;
+                    return;
+                }
+
+                double deltaTime = (now - lastTime) / 1_000_000_000.0;
+                lastTime = now;
+
+                raceManager.updateRace(deltaTime);
+                update();
+
+                if (raceManager.isRaceFinished()) {
+                    showResults();
+                    stop();
+                }
+            }
+        };
+
+        timer.start();
     }
 
     public Group makeFlag(String letter, double x, double y) {
@@ -83,5 +117,45 @@ public class TrackView extends Application {
 
     return flag;
 }
+
+    /**
+     * Updates all car images so they match the model positions.
+     */
+    public void update() {
+        List<Car> cars = raceManager.getCars();
+
+        for (int i = 0; i < cars.size(); i++) {
+            Car car = cars.get(i);
+            ImageView view = carViews.get(i);
+
+            view.setLayoutX(car.getX());
+            view.setLayoutY(car.getY());
+        }
+    }
+
+    /**
+     * Shows race results in a popup dialog.
+     */
+    public void showResults() {
+        StringBuilder message = new StringBuilder();
+
+        for (RaceResult r : raceManager.getResults()) {
+            message.append(r.getCar().getName())
+                    .append(" time: ")
+                    .append(String.format("%.2f", r.getTotalTime()))
+                    .append("\n");
+        }
+
+        if (raceManager.getWinner() != null) {
+            message.append("\nWinner: ")
+                    .append(raceManager.getWinner().getName());
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Race Results");
+        alert.setHeaderText("Race Finished");
+        alert.setContentText(message.toString());
+        alert.show();
+    }
     
 }
