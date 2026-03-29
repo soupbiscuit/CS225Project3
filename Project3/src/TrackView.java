@@ -20,6 +20,7 @@ public class TrackView extends Application {
     @Override
     public void start(Stage game)  {
         Pane root = new Pane();
+        root.setStyle("-fx-background-color: #C2B280;");
 
         ImageView blueCar = new ImageView(new Image(getClass().getResourceAsStream("/Resources/bluecar-2.png")));
         ImageView brownCar = new ImageView(new Image(getClass().getResourceAsStream("/Resources/brown-1.png")));
