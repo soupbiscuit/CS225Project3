@@ -73,6 +73,9 @@ public class TrackView extends Application {
         game.setScene(scene);
         game.setTitle("Track View");
         game.show();
+
+        // Initialize the car positions immediately
+        update();
         AnimationTimer timer = new AnimationTimer() {
             private long lastTime = 0;
 
@@ -136,7 +139,7 @@ public class TrackView extends Application {
             ImageView view = carViews.get(i);
 
             view.setLayoutX(car.getX());
-            view.setLayoutY(car.getY());
+            view.setLayoutY(car.getY() + (i * 18)); // small lane offset
         }
     }
 
