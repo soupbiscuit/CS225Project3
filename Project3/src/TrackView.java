@@ -29,7 +29,7 @@ public class TrackView extends Application {
         root.setStyle("-fx-background-color: #C2B280;");
 
         raceManager.setUpRace();
-
+        // Load car images and create ImageViews for each car
         ImageView blueCar = new ImageView(new Image(getClass().getResourceAsStream("/Resources/bluecar-2.png")));
         ImageView brownCar = new ImageView(new Image(getClass().getResourceAsStream("/Resources/brown-1.png")));
         ImageView redCar = new ImageView(new Image(getClass().getResourceAsStream("/Resources/decapred-1.png")));
@@ -61,7 +61,7 @@ public class TrackView extends Application {
         yellowCar.setLayoutY(550);
 
         
-
+        // Create markers for the stops
         Group markerA = makeFlag("A", 200, 400);
         Group markerB = makeFlag("B", 700, 150);
         Group markerC = makeFlag("C", 1300, 150);
@@ -147,7 +147,12 @@ public class TrackView extends Application {
         StringBuilder message = new StringBuilder();
 
         for (RaceResult r : raceManager.getResults()) {
-            message.append(r.getCar().getName())
+            Car car = r.getCar();
+            message.append(car.getName())
+                    .append("\nEngine: ").append(car.getEngine().getName())
+                    .append(" (Top Speed: ").append(String.format("%.2f", car.getEngine().getTopSpeed())).append(")")
+                    .append("\nTires: ").append(car.getTires().getName())
+                    .append(" (Grip: ").append(String.format("%.2f", car.getTires().getGrip())).append(")")
                     .append(" time: ")
                     .append(String.format("%.2f", r.getTotalTime()))
                     .append("\n");

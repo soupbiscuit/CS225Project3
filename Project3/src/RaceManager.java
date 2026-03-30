@@ -112,8 +112,9 @@ public class RaceManager {
             car.reset();
         }
     }
-
+    //sets up the race by creating the stops and cars
     public void setUpRace() {
+        //creats list of Stops fort he cars to follow
         List<Stop> stops = new ArrayList<>();
         stops.add(new Stop("Start", 800, 550));
         stops.add(new Stop("A", 200, 400));
@@ -121,20 +122,25 @@ public class RaceManager {
         stops.add(new Stop("C", 1300, 150));
         stops.add(new Stop("D", 1800, 400));
         
+        //list of car names, tire names, and engine names to randomly assign to the cars
+        String[] carNames = {"Blue Car", "Brown Car", "Red Car", "Yellow Car"};
+        String[] tireNames = {"Soft", "Medium", "Hard", "All-Weather"};
+        String[] engineNames = {"V6", "V8", "Electric", "Hybrid"};
 
-        Car blueCar = new Car("Blue Car", new Engine("V8",200), new Tires("Sport",0.9), generateRandomPath(stops));
-        Car brownCar = new Car("Brown Car", new Engine("V6",180), new Tires("Standard",0.8), generateRandomPath(stops));
-        Car redCar = new Car("Red Car", new Engine("Electric",210), new Tires("Racing",0.95), generateRandomPath(stops));
-        Car yellowCar = new Car("Yellow Car", new Engine("V12",250), new Tires("Off-road",1), generateRandomPath(stops));
+        for (String carName : carNames) {
+            double topSpeed = 150 + Math.random() * 150; // Random top speed between 150 and 300
+            double grip = 0.7 + Math.random() * 0.4; // Random grip between 0.7 and 1.1
 
-        for (Car car : List.of(blueCar, brownCar, redCar, yellowCar)) {
-            car.reset();
+            String engineName = engineNames[(int) (Math.random() * engineNames.length)];// Randomly select an engine name
+            String tireName = tireNames[(int) (Math.random() * tireNames.length)];// Randomly select a tire name
+
+            Car car = new Car(carName, new Engine(engineName, topSpeed), new Tires(tireName, grip), generateRandomPath(stops));
+            car.reset(); 
             cars.add(car);
         }
-
         startRace();
     }
-
+    //Shuffles the stops other than the starting point
     public List<Stop> generateRandomPath(List<Stop> stops) {
     // Keep the first stop (starting position) fixed
     Stop start = stops.get(0);
