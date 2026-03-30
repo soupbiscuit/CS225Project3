@@ -30,15 +30,17 @@ public class Car {
      * @param name the car's name.
      * @param engine the car's engine.
      * @param tires the car's tires.
+     * @param path the car's path (list of stops) that it will
      */
-    public Car(String name, Engine engine, Tires tires) {
+    public Car(String name, Engine engine, Tires tires, List<Stop> path) {
         this.name = name;
         this.engine = engine;
         this.tires = tires;
+        this.path = path;
 
         // TODO: How will the car's speed and path be determined?
         this.speed = 0;
-        this.path = null;
+        
     }
 
     /**

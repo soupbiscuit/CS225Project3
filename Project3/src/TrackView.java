@@ -28,6 +28,8 @@ public class TrackView extends Application {
         Pane root = new Pane();
         root.setStyle("-fx-background-color: #C2B280;");
 
+        raceManager.setUpRace();
+
         ImageView blueCar = new ImageView(new Image(getClass().getResourceAsStream("/Resources/bluecar-2.png")));
         ImageView brownCar = new ImageView(new Image(getClass().getResourceAsStream("/Resources/brown-1.png")));
         ImageView redCar = new ImageView(new Image(getClass().getResourceAsStream("/Resources/decapred-1.png")));
@@ -46,19 +48,24 @@ public class TrackView extends Application {
         yellowCar.setFitWidth(20);
         yellowCar.setFitHeight(10);
 
-        blueCar.setLayoutX(100);
-        blueCar.setLayoutY(50);
-        brownCar.setLayoutX(100);
-        brownCar.setLayoutY(80);
-        redCar.setLayoutX(100);
-        redCar.setLayoutY(110);
-        yellowCar.setLayoutX(100);
-        yellowCar.setLayoutY(140);
+        blueCar.setLayoutX(660);
+        blueCar.setLayoutY(550);
 
-        Group markerA = makeFlag("A", 500, 50);
-        Group markerB = makeFlag("B", 1000, 50);
-        Group markerC = makeFlag("C", 1500, 50);
-        Group markerD = makeFlag("D", 1800, 50);
+        brownCar.setLayoutX(740);
+        brownCar.setLayoutY(550);
+
+        redCar.setLayoutX(820);
+        redCar.setLayoutY(550);
+
+        yellowCar.setLayoutX(900);
+        yellowCar.setLayoutY(550);
+
+        
+
+        Group markerA = makeFlag("A", 200, 400);
+        Group markerB = makeFlag("B", 700, 150);
+        Group markerC = makeFlag("C", 1300, 150);
+        Group markerD = makeFlag("D", 1800, 400);
 
         root.getChildren().addAll(blueCar, brownCar, redCar, yellowCar, markerA, markerB, markerC, markerD);
 

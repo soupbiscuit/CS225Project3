@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
+
 
 public class RaceManager {
 
@@ -109,5 +111,43 @@ public class RaceManager {
         for (Car car : cars) {
             car.reset();
         }
+    }
+
+    public void setUpRace() {
+        List<Stop> stops = new ArrayList<>();
+        stops.add(new Stop("Start", 800, 550));
+        stops.add(new Stop("A", 200, 400));
+        stops.add(new Stop("B", 700, 150));
+        stops.add(new Stop("C", 1300, 150));
+        stops.add(new Stop("D", 1800, 400));
+        
+
+        Car blueCar = new Car("Blue Car", new Engine("V8",200), new Tires("Sport",0.9), generateRandomPath(stops));
+        Car brownCar = new Car("Brown Car", new Engine("V6",180), new Tires("Standard",0.8), generateRandomPath(stops));
+        Car redCar = new Car("Red Car", new Engine("Electric",210), new Tires("Racing",0.95), generateRandomPath(stops));
+        Car yellowCar = new Car("Yellow Car", new Engine("V12",250), new Tires("Off-road",1), generateRandomPath(stops));
+
+        for (Car car : List.of(blueCar, brownCar, redCar, yellowCar)) {
+            car.reset();
+            cars.add(car);
+        }
+
+        startRace();
+    }
+
+    public List<Stop> generateRandomPath(List<Stop> stops) {
+    // Keep the first stop (starting position) fixed
+    Stop start = stops.get(0);
+    
+    // Shuffle the rest
+    List<Stop> middleStops = new ArrayList<>(stops.subList(1, stops.size()));
+    Collections.shuffle(middleStops);
+    
+    // Build the full path
+    List<Stop> path = new ArrayList<>();
+    path.add(start);
+    path.addAll(middleStops);
+    
+    return path;
     }
 }
