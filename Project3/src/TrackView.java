@@ -19,6 +19,22 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The TrackView class is responsible for displaying the race using JavaFX.
+ *
+ * It creates the graphical interface, including the race track, car images,
+ * stop markers, and control buttons (Start and Restart).
+ *
+ * TrackView interacts with the RaceManager to retrieve and update the state
+ * of the race, including car positions and race results.
+ *
+ * It also handles the animation loop that continuously updates the display
+ * as the race progresses, and presents the final results to the user when
+ * the race is complete.
+ *
+ * Quincy Williams + Jasper Carr
+ */
+
 public class TrackView extends Application {
 
     // Manages the race logic, cars, winner, and results

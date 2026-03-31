@@ -2,6 +2,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 
+/**
+ * The RaceManager class is responsible for controlling the entire race simulation.
+ *
+ * It manages the collection of Car objects, updates their positions over time,
+ * applies randomized speed variations, and determines when the race has finished.
+ *
+ * This class also identifies the winning car and generates RaceResult objects
+ * that summarize the performance of each car after the race completes.
+ *
+ * Additionally, RaceManager supports restarting the race by resetting all cars
+ * and generating new randomized paths for each simulation.
+ *
+ * Jasper Carr
+ */
 
 public class RaceManager {
 
