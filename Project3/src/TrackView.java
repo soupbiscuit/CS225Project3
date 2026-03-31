@@ -1,3 +1,7 @@
+/**
+ * @author:  Quincy Williams
+ */
+
 import javafx.application.Application;
 import javafx.animation.AnimationTimer;
 import javafx.stage.Stage;
