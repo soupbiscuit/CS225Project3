@@ -5,6 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 
+/**
+ * The RaceManager class is responsible for controlling the entire race simulation.
+ * It manages the collection of Car objects, updates their positions over time,
+ * applies randomized speed variations, and determines when the race has finished.
+ * This class also identifies the winning car and generates RaceResult objects
+ * that summarize the performance of each car after the race completes.
+ * Additionally, RaceManager supports restarting the race by resetting all cars
+ * and generating new randomized paths for each simulation.
+ * Jasper Carr
+ */
 
 public class RaceManager {
 
@@ -117,46 +127,64 @@ public class RaceManager {
     }
     //sets up the race by creating the stops and cars
     public void setUpRace() {
-        //creats list of Stops fort he cars to follow
+        cars.clear();
+        results.clear();
+        winner = null;
+        raceFinished = false;
+        raceRunning = false;
+
+        // Only use the real race stops
         List<Stop> stops = new ArrayList<>();
-        stops.add(new Stop("Start", 800, 550));
         stops.add(new Stop("A", 200, 400));
         stops.add(new Stop("B", 700, 150));
         stops.add(new Stop("C", 1300, 150));
         stops.add(new Stop("D", 1800, 400));
-        
-        //list of car names, tire names, and engine names to randomly assign to the cars
+
         String[] carNames = {"Blue Car", "Brown Car", "Red Car", "Yellow Car"};
         String[] tireNames = {"Soft", "Medium", "Hard", "All-Weather"};
         String[] engineNames = {"V6", "V8", "Electric", "Hybrid"};
 
-        for (String carName : carNames) {
-            double topSpeed = 150 + Math.random() * 150; // Random top speed between 150 and 300
-            double grip = 0.7 + Math.random() * 0.4; // Random grip between 0.7 and 1.1
+        // Shuffle once so each car gets a different starting stop
+        List<Stop> shuffledStarts = new ArrayList<>(stops);
+        Collections.shuffle(shuffledStarts);
 
-            String engineName = engineNames[(int) (Math.random() * engineNames.length)];// Randomly select an engine name
-            String tireName = tireNames[(int) (Math.random() * tireNames.length)];// Randomly select a tire name
+        for (int i = 0; i < carNames.length; i++) {
+            double topSpeed = 150 + Math.random() * 150;
+            double grip = 0.7 + Math.random() * 0.4;
 
-            Car car = new Car(carName, new Engine(engineName, topSpeed), new Tires(tireName, grip), generateRandomPath(stops));
-            car.reset(); 
+            String engineName = engineNames[(int) (Math.random() * engineNames.length)];
+            String tireName = tireNames[(int) (Math.random() * tireNames.length)];
+
+            Stop startStop = shuffledStarts.get(i % shuffledStarts.size());
+            List<Stop> path = generateRandomPath(stops, startStop);
+
+            Car car = new Car(
+                    carNames[i],
+                    new Engine(engineName, topSpeed),
+                    new Tires(tireName, grip),
+                    path
+            );
+
+            car.reset();
             cars.add(car);
         }
+
         startRace();
     }
-    //Shuffles the stops other than the starting point
-    public List<Stop> generateRandomPath(List<Stop> stops) {
-    // Keep the first stop (starting position) fixed
-    Stop start = stops.get(0);
-    
-    // Shuffle the rest
-    List<Stop> middleStops = new ArrayList<>(stops.subList(1, stops.size()));
-    Collections.shuffle(middleStops);
-    
-    // Build the full path
-    List<Stop> path = new ArrayList<>();
-    path.add(start);
-    path.addAll(middleStops);
-    
-    return path;
+    //Shuffles the stops
+    public List<Stop> generateRandomPath(List<Stop> stops, Stop startStop) {
+        // Copy all stops except the chosen starting stop
+        List<Stop> remainingStops = new ArrayList<>(stops);
+        remainingStops.remove(startStop);
+
+        // Shuffle the remaining stops so the path is different each race
+        Collections.shuffle(remainingStops);
+
+        // Build full path with chosen start first
+        List<Stop> path = new ArrayList<>();
+        path.add(startStop);
+        path.addAll(remainingStops);
+
+        return path;
     }
 }
