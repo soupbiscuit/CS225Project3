@@ -10,7 +10,7 @@ import java.util.Collections;
  * that summarize the performance of each car after the race completes.
  * Additionally, RaceManager supports restarting the race by resetting all cars
  * and generating new randomized paths for each simulation.
- * Jasper Carr
+ * Jasper Carr + Quincy Williams
  */
 
 public class RaceManager {
