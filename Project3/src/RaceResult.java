@@ -1,13 +1,10 @@
 /**
  * The RaceResult class represents the outcome of a single car in a race.
- *
  * Each RaceResult object stores the car associated with the result,
  * the total time taken to complete the race, and whether the car is
  * the winner.
- *
  * This class is used by the RaceManager to store and organize results
  * for all cars, and by the TrackView to display those results to the user.
- *
  * Jonathan Joseph + Jasper Carr
  */
 
