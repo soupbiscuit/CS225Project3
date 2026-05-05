@@ -38,7 +38,7 @@ public class Car {
         this.tires = tires;
         this.path = path;
 
-        // TODO: How will the car's speed and path be determined?
+        // Speed starts at 0 and is updated by RaceManager during the race.
         this.speed = 0;
         
     }
@@ -216,4 +216,44 @@ public class Car {
     public double getY() { return y; }
     public double getTotalTime() { return totalTime; }
 
+    /**
+     * Returns the car's path as a readable string (e.g., A -> B -> C -> D)
+     */
+    public String getPathString() {
+        if (path == null || path.isEmpty()) {
+            return "No path";
+        }
+
+        StringBuilder pathText = new StringBuilder();
+
+        for (int i = 0; i < path.size(); i++) {
+            pathText.append(path.get(i).getStopName());
+
+            if (i < path.size() - 1) {
+                pathText.append(" -> ");
+            }
+        }
+
+        return pathText.toString();
+    }
+
+    /**
+     * Returns the angle (in degrees) the car is currently moving in.
+     */
+    public double getDirectionAngle() {
+        if (path == null || currentStopIndex >= path.size() - 1) {
+            return 0;
+        }
+
+        Stop current = path.get(currentStopIndex);
+        Stop next = path.get(currentStopIndex + 1);
+
+        double dx = next.getX() - current.getX();
+        double dy = next.getY() - current.getY();
+
+        return Math.toDegrees(Math.atan2(dy, dx));
+    }
+
 }
+
+

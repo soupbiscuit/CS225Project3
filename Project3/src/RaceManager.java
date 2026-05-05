@@ -1,6 +1,3 @@
-/**
- * @author:  Quincy Williams
- */
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -12,11 +9,20 @@ import java.util.Collections;
  * This class also identifies the winning car and generates RaceResult objects
  * that summarize the performance of each car after the race completes.
  * Additionally, RaceManager supports restarting the race by resetting all cars
- * and generating new randomized paths for each simulation.
+ * and generating new loop-based paths for each simulation.
  * Jasper Carr + Quincy Williams
  */
-
 public class RaceManager {
+
+    // Track coordinate constants. These should match the coordinates used in TrackView.
+    private static final int A_X = 200;
+    private static final int A_Y = 350;
+    private static final int B_X = 500;
+    private static final int B_Y = 150;
+    private static final int C_X = 850;
+    private static final int C_Y = 150;
+    private static final int D_X = 1050;
+    private static final int D_Y = 350;
 
     private List<Car> cars = new ArrayList<>();
     private List<RaceResult> results = new ArrayList<>();
@@ -37,16 +43,35 @@ public class RaceManager {
         return raceFinished;
     }
 
+    public boolean isRaceRunning() {
+        return raceRunning;
+    }
+
     public Car getWinner() {
         return winner;
     }
 
+    /**
+     * Starts the race.
+     * The animation timer in TrackView will call updateRace(...) while this is true.
+     */
     public void startRace() {
         raceRunning = true;
+        raceFinished = false;
+    }
+
+    /**
+     * Stops the race without rebuilding the cars.
+     * This is useful when the race is finished or restarted.
+     */
+    public void stopRace() {
+        raceRunning = false;
     }
 
     /**
      * Updates the race by updating each unfinished car.
+     *
+     * @param deltaTime the time passed since the previous frame, in seconds
      */
     public void updateRace(double deltaTime) {
         if (!raceRunning || raceFinished) {
@@ -58,10 +83,13 @@ public class RaceManager {
                 double baseSpeed = car.getEngine().getTopSpeed();
                 double grip = car.getTires().getGrip();
 
-                // Random variation to make the race feel less predictable
+                // Random variation makes each race slightly unpredictable.
                 double variation = 0.8 + Math.random() * 0.4;
+
+                // The car's speed is based on its engine, tires, and random variation.
                 car.setSpeed(baseSpeed * variation * grip);
 
+                // Move the car along its path.
                 car.update(deltaTime);
             }
         }
@@ -97,6 +125,8 @@ public class RaceManager {
 
     /**
      * Finds the car with the smallest completion time.
+     *
+     * @return the car that completed the race fastest
      */
     public Car determineWinner() {
         Car best = null;
@@ -113,7 +143,8 @@ public class RaceManager {
     }
 
     /**
-     * Resets the race so it can be run again.
+     * Resets the current cars to their starting positions.
+     * This does not create new cars or new paths.
      */
     public void resetRace() {
         raceRunning = false;
@@ -125,7 +156,11 @@ public class RaceManager {
             car.reset();
         }
     }
-    //sets up the race by creating the stops and cars
+
+    /**
+     * Sets up a new race by creating the stops, cars, engines, tires, and paths.
+     * Each car starts at a different stop but follows the same loop direction.
+     */
     public void setUpRace() {
         cars.clear();
         results.clear();
@@ -133,18 +168,18 @@ public class RaceManager {
         raceFinished = false;
         raceRunning = false;
 
-        // Only use the real race stops
+        // These stops define the loop track.
         List<Stop> stops = new ArrayList<>();
-        stops.add(new Stop("A", 200, 400));
-        stops.add(new Stop("B", 700, 150));
-        stops.add(new Stop("C", 1300, 150));
-        stops.add(new Stop("D", 1800, 400));
+        stops.add(new Stop("A", A_X, A_Y));
+        stops.add(new Stop("B", B_X, B_Y));
+        stops.add(new Stop("C", C_X, C_Y));
+        stops.add(new Stop("D", D_X, D_Y));
 
         String[] carNames = {"Blue Car", "Brown Car", "Red Car", "Yellow Car"};
         String[] tireNames = {"Soft", "Medium", "Hard", "All-Weather"};
         String[] engineNames = {"V6", "V8", "Electric", "Hybrid"};
 
-        // Shuffle once so each car gets a different starting stop
+        // Shuffle once so each car receives a different starting stop.
         List<Stop> shuffledStarts = new ArrayList<>(stops);
         Collections.shuffle(shuffledStarts);
 
@@ -156,7 +191,9 @@ public class RaceManager {
             String tireName = tireNames[(int) (Math.random() * tireNames.length)];
 
             Stop startStop = shuffledStarts.get(i % shuffledStarts.size());
-            List<Stop> path = generateRandomPath(stops, startStop);
+
+            // All cars stay on the loop track, but each starts at a different stop.
+            List<Stop> path = generateLoopPath(stops, startStop);
 
             Car car = new Car(
                     carNames[i],
@@ -168,22 +205,25 @@ public class RaceManager {
             car.reset();
             cars.add(car);
         }
-
-        startRace();
     }
-    //Shuffles the stops
-    public List<Stop> generateRandomPath(List<Stop> stops, Stop startStop) {
-        // Copy all stops except the chosen starting stop
-        List<Stop> remainingStops = new ArrayList<>(stops);
-        remainingStops.remove(startStop);
 
-        // Shuffle the remaining stops so the path is different each race
-        Collections.shuffle(remainingStops);
-
-        // Build full path with chosen start first
+    /**
+     * Generates a path that starts at a given stop and follows the loop direction.
+     * Example: A -> B -> C -> D, or C -> D -> A -> B.
+     *
+     * @param stops the ordered loop stops
+     * @param startStop the stop where the car starts
+     * @return a loop path beginning at startStop
+     */
+    public List<Stop> generateLoopPath(List<Stop> stops, Stop startStop) {
         List<Stop> path = new ArrayList<>();
-        path.add(startStop);
-        path.addAll(remainingStops);
+
+        int startIndex = stops.indexOf(startStop);
+
+        for (int i = 0; i < stops.size(); i++) {
+            int index = (startIndex + i) % stops.size();
+            path.add(stops.get(index));
+        }
 
         return path;
     }
